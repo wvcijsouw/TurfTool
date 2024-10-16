@@ -692,7 +692,7 @@ class TurfTool():
                         turfmat[name]['current'].append(turfmat[name]['current'][-1])
 
                     # If it is a inned turf, check for nonzero
-                    if turf[1][0] == 'minus' and turfmat[turf[1][1]][-1] > 0:
+                    if turf[1][0] == 'minus' and turfmat[turf[1][1]]['current'][-1] > 0:
                         turfmat[turf[1][1]]['current'][-1] -= 1
 
                     elif turf[1][0] == 'minus' and self.forcenonegative == False:

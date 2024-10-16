@@ -12,7 +12,10 @@ import configparser
 import difflib
 
 from matplotlib import use as muse
-muse('Qt5Agg')
+try:
+    muse('Qt5Agg')
+except:
+    pass
 
 
 class TurfTool():
@@ -31,6 +34,8 @@ class TurfTool():
 
         # Determine current time
         self.currenttime = datetime.datetime.now()
+
+
 
 
 
@@ -692,7 +697,7 @@ class TurfTool():
                         turfmat[name]['current'].append(turfmat[name]['current'][-1])
 
                     # If it is a inned turf, check for nonzero
-                    if turf[1][0] == 'minus' and turfmat[turf[1][1]][-1] > 0:
+                    if turf[1][0] == 'minus' and turfmat[turf[1][1]]['current'][-1] > 0:
                         turfmat[turf[1][1]]['current'][-1] -= 1
 
                     elif turf[1][0] == 'minus' and self.forcenonegative == False:
@@ -818,11 +823,8 @@ class TurfTool():
 
                 # Shift the x limit of the turfs over time graph
                 ax3.tick_params(axis='x',labelrotation=-45)
-                xticks = [min(self.day0,turfmat['time'][0])+(i/(self.graphxticks-1))*(tselect-min(self.day0,turfmat['time'][0]))
-                                for i in range(self.graphxticks)]
-                if min(self.day0,turfmat['time'][0]) == self.day0:
-                    xticks[0] = self.day0event
-                ax3.set_xticks(xticks)
+                ax3.set_xticks([min(self.day0,turfmat['time'][0])+(i/(self.graphxticks-1))*(tselect-min(self.day0,turfmat['time'][0]))
+                                for i in range(self.graphxticks)])
                 ax3.set_xlim(min(self.day0,turfmat['time'][0]),tselect)
                 ax3.legend(loc='upper left')
 

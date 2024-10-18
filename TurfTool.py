@@ -58,7 +58,7 @@ class TurfTool():
             
 
         # Check whether Turfjes.csv is present
-        self.turfpath = os.path.dirname(config) + '\Turfjes.csv'
+        self.turfpath = os.path.dirname(config) + '\\Turfjes.csv'
         turfpresent = os.path.exists(self.turfpath)
 
         if not turfpresent:

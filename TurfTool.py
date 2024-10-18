@@ -1103,9 +1103,9 @@ if __name__ == '__main__':
     # Weird thing that happens is that dirname reads two different things depending on whether you run the .py or the .bat file/
     # This should catch all exceptions, let me know if you get the FileNotPresent error if the settings.cfg file is present.
     if os.path.dirname(__file__).startswith('c:'):
-        config = os.path.dirname(__file__) + '\settings.cfg'
+        config = os.path.dirname(__file__) + '\\settings.cfg'
     else:
-        config = os.getcwd() + os.path.dirname(__file__) + '\settings.cfg'
+        config = os.getcwd() + os.path.dirname(__file__) + '\\settings.cfg'
     
     Turf = TurfTool(config)
     Turf.launch()

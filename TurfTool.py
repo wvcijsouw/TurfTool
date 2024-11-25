@@ -11,11 +11,7 @@ import sys
 import configparser
 import difflib
 
-from matplotlib import use as muse
-try:
-    muse('Qt5Agg')
-except:
-    pass
+
 
 
 class TurfTool():
@@ -159,16 +155,16 @@ class TurfTool():
         os.system('cls')
 
         # Print the top line
-        print(      r'===============================================================================================================\n'\
-                    r"                                                                                                               \n"\
-                    r"                                    _____            __ _____           _                                      \n"\
-                    r"                                   |_   _|   _ _ __ / _|_   _|__   ___ | |                                     \n"\
-                    r"                                     | || | | | '__| |_  | |/ _ \ / _ \| |                                     \n"\
-                    r"                                     | || |_| | |  |  _| | | (_) | (_) | |                                     \n"\
-                    r"                                     |_| \__,_|_|  |_|   |_|\___/ \___/|_|                                     \n"\
-                    r"                                                                                                               \n"\
-                    r"					                                                                                            \n"\
-                    r'===============================================================================================================\n')
+        print(      r'==============================================================================================================='+'\n'\
+                    r"                                                                                                               "+'\n'\
+                    r"                                    _____            __ _____           _                                      "+'\n'\
+                    r"                                   |_   _|   _ _ __ / _|_   _|__   ___ | |                                     "+'\n'\
+                    r"                                     | || | | | '__| |_  | |/ _ \ / _ \| |                                     "+'\n'\
+                    r"                                     | || |_| | |  |  _| | | (_) | (_) | |                                     "+'\n'\
+                    r"                                     |_| \__,_|_|  |_|   |_|\___/ \___/|_|                                     "+'\n'\
+                    r"                                                                                                               "+'\n'\
+                    r"					                                                                                             "+'\n'\
+                    r'===============================================================================================================')
         if welcomemsg:
             print(  '                  Welcome to the TurfTool by Secretary Cijsouw of the 16th Lustrum Committee!                  \n'\
                     'This tool is an upgraded version of the TurfTool written by Secretary Van Lent of the 39th Studytour Committee.\n'\
@@ -835,13 +831,11 @@ class TurfTool():
 
             # Maximize the window and make some adjustments to the window positions
             updateplots(1)
-            wm = plt.get_current_fig_manager()
-            wm.window.showMaximized()
-            try:
-                wm = plt.get_current_fig_manager()
-                wm.window.showMaximized()
-            except:
-                print('Failed to maximize window, display regular window instead...')
+            # try:
+            #     wm = plt.get_current_fig_manager()
+            #     wm.window.showMaximized()
+            # except:
+            #     print('Failed to maximize window, display regular window instead...')
             plt.subplots_adjust(left=0.05,right=0.95,bottom=0.2,top=0.9)
 
             # Set the title with actual grammar
@@ -1035,7 +1029,11 @@ class TurfTool():
                 # If the minimum value of the balance list only occurs once, solidarity needs to be applied
                 if occurrences_minval == 1:
                     # Determine at which index the solidarity turfs need to be inserted
-                    index = [timelst[i] >= timetrack for i in range(len(timelst))].index(True)
+                    # It's not a bug that solidarity turfs aren't visible in the future it's a feature
+                    try:
+                        index = [timelst[i] >= timetrack for i in range(len(timelst))].index(True)
+                    except:
+                        index = -1
                     for i in range(sorted(balancelist)[1] - sorted(balancelist)[0]):
                         solidarityname = [key for key in names if turfbalance_dummy[key] == min(balancelist)][0]
 
@@ -1102,7 +1100,7 @@ if __name__ == '__main__':
     sys.tracebacklimit = 0
     # Weird thing that happens is that dirname reads two different things depending on whether you run the .py or the .bat file/
     # This should catch all exceptions, let me know if you get the FileNotPresent error if the settings.cfg file is present.
-    if os.path.dirname(__file__).startswith('c:'):
+    if os.path.dirname(__file__).lower().startswith('c:'):
         config = os.path.dirname(__file__) + '\\settings.cfg'
     else:
         config = os.getcwd() + os.path.dirname(__file__) + '\\settings.cfg'

@@ -121,7 +121,7 @@ class TurfTool():
         self.usecolours = ConfigParser.get('plotsettings','usecolours').lower() == 'true'
         self.colours = [f'#{i}' for i in listdecoder(ConfigParser.get('plotsettings','colours'))]
         self.barcolours = [int(i) for i in listdecoder(ConfigParser.get('plotsettings','barcolours'))]
-
+        self.maxreasons = int(ConfigParser.get('plotsettings','maxreasons'))
 
 
     def launch(self):
@@ -702,6 +702,30 @@ class TurfTool():
                     elif turf[1][0] == 'turf':
                         turfmat[turf[1][1]]['alltime'][-1] += 1
                         turfmat[turf[1][1]]['current'][-1] += 1
+
+            # Do some postprocessing on the turf event count to limit the reasons
+            for turfcountid in range(len(turfmat['turfeventcount'])):
+                if len(turfmat['turfeventcount'][turfcountid].keys()) > self.maxreasons:
+                    # Sort the turf count
+                    s_turfcount = dict(sorted(turfmat['turfeventcount'][turfcountid].items(), 
+                                                        key=lambda x:x[1], 
+                                                        reverse=True))
+
+                    # Add the highest counting turf reasons until the maximum amount of reasons are reached
+                    turfcount_disp = {"Other": 0}
+                    while len(turfcount_disp.keys()) < self.maxreasons:
+                        if list(s_turfcount.keys())[0] == "Other":
+                            turfcount_disp["Other"] += s_turfcount["Other"]
+                        else:
+                            turfcount_disp[list(s_turfcount.keys())[0]] = s_turfcount[list(s_turfcount.keys())[0]]
+                        s_turfcount.pop(list(s_turfcount.keys())[0])
+
+                    # Add the remaining reasons to others
+                    turfcount_disp["Other"] += sum(s_turfcount.values())
+
+                    # Update the turf matrix
+                    turfmat['turfeventcount'][turfcountid] = turfcount_disp
+
 
             # Make a last column at the current time for plotting reasons
             for name in group:

@@ -122,6 +122,7 @@ class TurfTool():
         self.colours = [f'#{i}' for i in listdecoder(ConfigParser.get('plotsettings','colours'))]
         self.barcolours = [int(i) for i in listdecoder(ConfigParser.get('plotsettings','barcolours'))]
         self.maxreasons = int(ConfigParser.get('plotsettings','maxreasons'))
+        self.anytimeramount = int(ConfigParser.get('plotsettings','anytimeramount'))
 
 
     def launch(self):
@@ -755,6 +756,8 @@ class TurfTool():
 
             # Graph for turfs over time
             ax3 = plt.subplot(2,2,(3,4))
+            ## Plot the crossover line for anytimers
+            ax3.plot([self.day0, self.currenttime],[self.anytimeramount]*2, color='red')
             ## This can just be pre-plotted since we can just shift the x limit
             colourid = 0
             for name in group:

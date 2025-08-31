@@ -20,9 +20,11 @@ class TurfTool():
     def __init__(self, config,**kwargs):
         super().__init__(**kwargs)
         
-        # initiate the main loop state
+        # Initiate the main loop state
         self.active = True
 
+        # Initiate a debug state
+        self.debug = True
 
         # Read the base settings, files and data
         self._check_filepresence(config)
@@ -44,6 +46,10 @@ class TurfTool():
             config (str): Settings cfg file location.
         """
 
+        if self.debug:
+            # For debugging: print settings.cfg location
+            print(f"Attempting to find the settings file at location {config}...")
+
         # Check whether settings.cfg is present
         cfgpresent = os.path.exists(config)
 
@@ -51,18 +57,30 @@ class TurfTool():
             # If not present, raise an error
             raise FileNotFoundError("Settings file not found. Either Wouter made an oopsie or the file got deleted along the way.\n"\
                                     "If you don't know where it is or what went wrong, contact Wouter.\n")
-            
+        elif self.debug:
+
+            print("Settings file found succesfully")
+            print("Checking existence of turf file...")
 
         # Check whether Turfjes.csv is present
         self.turfpath = os.path.dirname(config) + '\\Turfjes.csv'
         turfpresent = os.path.exists(self.turfpath)
 
         if not turfpresent:
+            if self.debug:
+                print("Turf file not found, creating fresh file...")
             # If not present, create a fresh file
             turffile = open(self.turfpath,'x',newline='')
             writer = csv.writer(turffile,delimiter=';')
             writer.writerow(['Category','Name','Time','Day','Month','Year','Reason'])
             turffile.close()
+        elif self.debug:
+            print("Existing turf file found, proceeding...")
+
+        if self.debug:
+            # Print that file checks have been completed
+            print(f"File checks completed!\n\n")
+
 
 
 
@@ -152,8 +170,9 @@ class TurfTool():
         Args:
             welcomemsg (bool, optional): Whether to print the welcome message. Defaults to False.
         """        
-        # Clear the screen
-        os.system('cls')
+        # Clear the screen (if debug is disabled)
+        if not self.debug:
+            os.system('cls')
 
         # Print the top line
         print(      r'==============================================================================================================='+'\n'\
@@ -183,25 +202,38 @@ class TurfTool():
 
         elif command[0].lower() == 't':
             self._print_topline()
-            try:
+            if not self.debug:
+                try:
+                    self._Turf()
+                except:
+                    input('Turfing failed, press Enter to return to the home screen...\n\n')
+            else:
                 self._Turf()
-            except:
-                input('Turfing failed, press Enter to return to the home screen...\n\n')
         
         elif command[0].lower() == 'i':
             self._print_topline()
-            try:
+            if not self.debug:
+                try:
+                    self._Inning()
+                except:
+                    input('Inning failed, press Enter to return to the home screen...\n\n')
+            else:
                 self._Inning()
-            except:
-                input('Inning failed, press Enter to return to the home screen...\n\n')
 
         elif command[0].lower() == 's':
             self._print_topline()
-            try:
+            if not self.debug:
+                try:
+                    self._Statistics()
+                except:
+                    input('Displaying the statistics failed, press Enter to return to the home screen...\n\n')
+            else:
                 self._Statistics()
-            except:
-                input('Displaying the statistics failed, press Enter to return to the home screen...\n\n')
         
+        elif command.lower() == 'debug':
+            self.debug = not self.debug
+            self._interpret_commands(input(f"Debug mode {'en'*self.debug}{'dis'*(1-self.debug)}abled\n\n"))
+
         else:
             self._print_topline()
             print('Unknown command. Please try again.\n')

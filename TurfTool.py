@@ -24,7 +24,7 @@ class TurfTool():
         self.active = True
 
         # Initiate a debug state
-        self.debug = True
+        self.debug = False
 
         # Read the base settings, files and data
         self._check_filepresence(config)
